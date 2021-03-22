@@ -13,11 +13,11 @@
       template:
         src: templates/ldap.j2
         dest: ./ldap.py 
-#    - name: Create configmap for CA
-#      command: |
-#        oc create configmap ldap-pem \
-#          --from-file=./ldap.py \
-#          -n {{ openshift_project }}
+    - name: Create configmap for CA
+      command: |
+        oc create configmap ldap-pem \
+          --from-file=./ldap.py \
+          -n {{ openshift_project }}
     - name: Mount configmap as volume in /etc/certs directory
       command: |
         oc set volume deployment/ansible-tower \
