@@ -17,6 +17,7 @@ The variables used to create and deploy CA secret/ConfigMap  Ansible Tower on Op
 |:---------|:------------|:---------|:---------|
 |openshift_project|OCP project in which Ansible Tower is deployed|no|'tower'|
 |ansible_tower.ldap.ca_cert| Path to CA pem file to be uploaded to Ansible Tower-file should have the "ldap.pem" name|yes||
+|ansible_tower.ldap.ca_mountpoint | Path at which CA file should be mounted in Ansible Tower containers|no|"/etc/certs"|
 
 ## Example Inventory
 

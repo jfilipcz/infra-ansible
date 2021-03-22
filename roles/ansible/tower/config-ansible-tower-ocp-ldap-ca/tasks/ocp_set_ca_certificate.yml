@@ -9,20 +9,28 @@
 
 - name: Create and Mount CA cert as configmap
   block:
-    - name: Create configmap for CA
-      command: |
-        oc create configmap ldap-pem \
-          --from-file={{ ansible_tower.ldap.ca_cert }} \
-          -n {{ openshift_project }}
+    - name: Templating ldap.py for CA configmap
+      template:
+        src: templates/ldap.j2
+        dest: ./ldap.py 
+#    - name: Create configmap for CA
+#      command: |
+#        oc create configmap ldap-pem \
+#          --from-file=./ldap.py \
+#          -n {{ openshift_project }}
     - name: Mount configmap as volume in /etc/certs directory
       command: |
         oc set volume deployment/ansible-tower \
           --add \
           --configmap-name ldap-pem \
           --type configmap \
-          --mount-path /etc/certs/{{ ansible_tower.ldap.ca_cert | basename }} \
+          --mount-path {{ ansible_tower.ldap.ca_mountpoint | default('etc/certs') }}/{{ ansible_tower.ldap.ca_cert | basename }} \
           --sub-path {{ ansible_tower.ldap.ca_cert | basename }} \
           -n {{ openshift_project }}
+    - name: Cleaning ldap.py temporary file
+      file:
+        path: ./ldap.py
+        state: absent
   when:
     - ldap_ca_check.rc != 0
 
